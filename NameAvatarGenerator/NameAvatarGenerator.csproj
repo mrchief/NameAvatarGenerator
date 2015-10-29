@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvatarGenerator.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="RandomColor.cs" />
     <Compile Include="ColorHelper\CIELab.cs" />
     <Compile Include="ColorHelper\CIEXYZ.cs" />
     <Compile Include="ColorHelper\CMYK.cs" />
