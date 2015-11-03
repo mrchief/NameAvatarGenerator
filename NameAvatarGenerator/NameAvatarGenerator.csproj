@@ -46,11 +46,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvatarGenerator.cs" />
-    <Compile Include="RandomColor.cs" />
+    <Compile Include="ColorGenerators\IColorGenerator.cs" />
+    <Compile Include="ColorGenerators\PaletteColorGenerator.cs" />
+    <Compile Include="ColorGenerators\RandomColorGenerator.cs" />
     <Compile Include="ColorHelper\CIELab.cs" />
     <Compile Include="ColorHelper\CIEXYZ.cs" />
     <Compile Include="ColorHelper\CMYK.cs" />
-    <Compile Include="ColorHelper\ColorGenerator.cs" />
+    <Compile Include="ColorHelper\SpacedColorGenerator.cs" />
     <Compile Include="ColorHelper\ColorRatio.cs" />
     <Compile Include="ColorHelper\ColorSpaceHelper.cs" />
     <Compile Include="ColorHelper\HSB.cs" />

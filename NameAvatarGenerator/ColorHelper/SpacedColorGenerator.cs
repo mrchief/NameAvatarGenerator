@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Drawing;
+using NameAvatarGenerator.ColorGenerators;
 
 /* Main usage:
  			ColorGenerator colorGenerator = new ColorGenerator();
@@ -19,7 +20,7 @@ using System.Drawing;
 
 namespace NameAvatarGenerator.ColorHelper
 {
-    public class ColorGenerator
+    public class SpacedColorGenerator : IColorGenerator
     {
         // ******************************************************************
         private const double MaximumDistanceMin = 1.0;
@@ -32,7 +33,7 @@ namespace NameAvatarGenerator.ColorHelper
         private double _distanceMin;
 
         // ******************************************************************
-        public ColorGenerator()
+        public SpacedColorGenerator()
         {
             DistanceMin = MaximumDistanceMin;
             UsedColors.CollectionChanged += _usedColors_CollectionChanged;

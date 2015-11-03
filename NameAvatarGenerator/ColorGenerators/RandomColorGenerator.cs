@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NameAvatarGenerator.ColorGenerators;
 
 namespace NameAvatarGenerator
 {
@@ -51,8 +50,11 @@ namespace NameAvatarGenerator
         }
     }
 
-    public static class RandomColor
+    public class RandomColorGenerator : IColorGenerator
     {
+        public ColorScheme ColorScheme { get; set; }
+        public Luminosity Luminosity { get; set; }
+
         private class DefinedColor
         {
             public Range HueRange { get; set; }
@@ -64,68 +66,27 @@ namespace NameAvatarGenerator
         private static readonly Dictionary<ColorScheme, DefinedColor> ColorDictionary = new Dictionary<ColorScheme, DefinedColor>();
 
         private readonly static object LockObj = new object();
-        private static Random _rng = new Random();
+        private static readonly Random Rng = new Random();
 
-        static RandomColor()
+        public RandomColorGenerator()
         {
             // Populate the color dictionary
             LoadColorBounds();
         }
 
-        public static Color GetColor(ColorScheme scheme, Luminosity luminosity)
+        public Color GetNextColor()
         {
-            int H, S, B;
-
             // First we pick a hue (H)
-            H = PickHue(scheme);
+            var hue = PickHue(ColorScheme);
 
             // Then use H to determine saturation (S)
-            S = PickSaturation(H, luminosity, scheme);
+            var saturation = PickSaturation(hue, Luminosity, ColorScheme);
 
             // Then use S and H to determine brightness (B).
-            B = PickBrightness(H, S, luminosity);
+            var brightness = PickBrightness(hue, saturation, Luminosity);
 
             // Then we return the HSB color in the desired format
-            return HsvToColor(H, S, B);
-        }
-
-        public static Color[] GetColors(ColorScheme scheme, Luminosity luminosity, int count)
-        {
-            var ret = new Color[count];
-            for (var i = 0; i < count; i++)
-            {
-                ret[i] = GetColor(scheme, luminosity);
-            }
-            return ret;
-        }
-
-        public static Color[] GetColors(params Options[] options)
-        {
-            if (options == null) throw new ArgumentNullException("options");
-
-            return options.Select(o => GetColor(o.ColorScheme, o.Luminosity)).ToArray();
-        }
-
-        /// <summary>
-        /// Reseeds the random number generated.
-        /// </summary>
-        /// <param name="seed">The number used to reseed the random number generator.</param>
-        public static void Seed(int seed)
-        {
-            lock (LockObj)
-            {
-                _rng = new Random(seed);
-            }
-        }
-        /// <summary>
-        /// Reseeds the random number generated.
-        /// </summary>
-        public static void Seed()
-        {
-            lock (LockObj)
-            {
-                _rng = new Random();
-            }
+            return HsvToColor(hue, saturation, brightness);
         }
 
         private static int PickHue(ColorScheme scheme)
@@ -262,7 +223,7 @@ namespace NameAvatarGenerator
         {
             lock (LockObj)
             {
-                return _rng.Next(lower, upper + 1);
+                return Rng.Next(lower, upper + 1);
             }
         }
 
@@ -343,7 +304,7 @@ namespace NameAvatarGenerator
                 );
         }
 
-        public static Color HsvToColor(int hue, int saturation, double value)
+        private static Color HsvToColor(int hue, int saturation, double value)
         {
             // this doesn't work for the values of 0 and 360
             // here's the hacky fix
@@ -388,6 +349,7 @@ namespace NameAvatarGenerator
         }
     }
 
+
     public enum ColorScheme
     {
         Random,
@@ -407,19 +369,5 @@ namespace NameAvatarGenerator
         Dark,
         Light,
         Bright,
-    }
-
-    public class Options
-    {
-        public ColorScheme ColorScheme { get; set; }
-        public Luminosity Luminosity { get; set; }
-
-        public Options()
-        { }
-        public Options(ColorScheme scheme, Luminosity luminosity)
-        {
-            ColorScheme = scheme;
-            Luminosity = luminosity;
-        }
     }
 }
